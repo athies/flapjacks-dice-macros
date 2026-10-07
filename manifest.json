@@ -4,8 +4,8 @@
   "manifest_version": 1,
   "action": {
     "title": "Dice Macros",
-    "icon": "https://twobarkdesign.com/owlbear_extension/icon.svg",
-    "popover": "https://twobarkdesign.com/owlbear_extension/index.html",
+    "icon": "icon.svg",
+    "popover": "index.html",
     "width": 360,
     "height": 520
   }
