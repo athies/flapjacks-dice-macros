@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "manifest_version": 1,
   "action": {
-    "title": "Dice Macros",
+    "title": "Flapjack's Dice Macros",
     "icon": "https://athies.github.io/owlbear_extension/icon.svg",
     "popover": "https://athies.github.io/owlbear_extension/index.html",
     "width": 360,
