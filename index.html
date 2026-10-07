@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dice Macro Roller</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Owlbear Rodeo SDK CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@latest/dist/obr.umd.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h2>Macro Roller</h2>
+      <span id="macro-count" class="badge">0 / 5</span>
+    </header>
+
+    <!-- Macro Creation Form -->
+    <section id="macro-form-section">
+      <div class="field">
+        <label for="macro-name">Macro Name</label>
+        <input type="text" id="macro-name" placeholder="e.g. Sword Attack" maxlength="25" />
+      </div>
+
+      <div class="row">
+        <div class="field count-col">
+          <label for="dice-count">Count</label>
+          <input type="number" id="dice-count" value="1" min="1" max="50" />
+        </div>
+        <div class="field die-col">
+          <label for="dice-type">Die</label>
+          <select id="dice-type">
+            <option value="4">d4</option>
+            <option value="6">d6</option>
+            <option value="8">d8</option>
+            <option value="12">d12</option>
+            <option value="20" selected>d20</option>
+            <option value="100">d100</option>
+          </select>
+        </div>
+        <div class="field mod-col">
+          <label for="modifier">Modifier</label>
+          <input type="number" id="modifier" value="0" placeholder="+/-" />
+        </div>
+      </div>
+
+      <button id="add-macro-btn" class="primary-btn">+ Save Macro</button>
+    </section>
+
+    <hr />
+
+    <!-- Saved Macros -->
+    <section>
+      <h3>Saved Macros</h3>
+      <div id="macro-list" class="macro-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Roll Output Area -->
+    <section id="result-box" class="result-box empty">
+      <div id="result-formula" class="result-formula">Click a macro to roll</div>
+      <div id="result-breakdown" class="result-breakdown"></div>
+      <div id="result-total" class="result-total">--</div>
+    </section>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
