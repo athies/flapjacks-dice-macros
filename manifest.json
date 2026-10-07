@@ -6,8 +6,8 @@
   "description": "Create, save, and roll up to 5 custom dice macros with detailed breakdown equations.",
   "action": {
     "title": "Flapjack's Dice Macros",
-    "icon": "https://athies.github.io/owlbear_extension/icon.svg",
-    "popover": "https://athies.github.io/owlbear_extension/index.html",
+    "icon": "https://athies.github.io/flapjacks_dice_macros/icon.svg",
+    "popover": "https://athies.github.io/flapjacks_dice_macros/index.html",
     "width": 360,
     "height": 520
   }
