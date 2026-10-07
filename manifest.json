@@ -4,8 +4,8 @@
   "manifest_version": 1,
   "action": {
     "title": "Dice Macros",
-    "icon": "./icon.svg",
-    "popover": "./index.html",
+    "icon": "https://athies.github.io/owlbear_extension/icon.svg",
+    "popover": "https://athies.github.io/owlbear_extension/index.html",
     "width": 360,
     "height": 520
   }
