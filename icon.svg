@@ -1,19 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <!-- D20 Outer Silhouette -->
-  <polygon points="12 2 21 7.2 21 16.8 12 22 3 16.8 3 7.2" fill="#2b2b36" stroke="#6366f1" />
-  
-  <!-- Central Face -->
-  <polygon points="12 6.5 18 16.5 6 16.5" fill="#1e1e24" stroke="#6366f1" stroke-width="1.5" />
-  
-  <!-- Facet Edge Lines -->
-  <line x1="12" y1="2" x2="12" y2="6.5" stroke="#6366f1" stroke-width="1.5" />
-  <line x1="3" y1="7.2" x2="6" y2="16.5" stroke="#6366f1" stroke-width="1.5" />
-  <line x1="21" y1="7.2" x2="18" y2="16.5" stroke="#6366f1" stroke-width="1.5" />
-  <line x1="3" y1="16.8" x2="6" y2="16.5" stroke="#6366f1" stroke-width="1.5" />
-  <line x1="21" y1="16.8" x2="18" y2="16.5" stroke="#6366f1" stroke-width="1.5" />
-  <line x1="6" y1="16.5" x2="12" y2="22" stroke="#6366f1" stroke-width="1.5" />
-  <line x1="18" y1="16.5" x2="12" y2="22" stroke="#6366f1" stroke-width="1.5" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <!-- Radiant Solar Core (Flapjack Golden Glow) -->
+    <radialGradient id="sunGlow" cx="50%" cy="46%" r="58%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#fde047" />
+      <stop offset="60%" stop-color="#f59e0b" />
+      <stop offset="90%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </radialGradient>
 
-  <!-- Macro Lightning / Bolt Accent in the center -->
-  <polygon points="12.5 8 9.5 12.5 12 12.5 11.5 15.5 14.5 11 12 11" fill="#38bdf8" stroke="none" />
+    <!-- Antiqued Bronze Token Frame Gradient -->
+    <linearGradient id="bronzeFrame" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#786334" />
+      <stop offset="45%" stop-color="#45381a" />
+      <stop offset="100%" stop-color="#1c160a" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Outer Token Points (Inspired by Flapjack's Ornate Frame) -->
+  <polygon points="12,0.6 13.6,2.6 10.4,2.6" fill="#8d743b" />
+  <polygon points="12,23.4 13.6,21.4 10.4,21.4" fill="#604f25" />
+  <polygon points="1.2,6.8 3,5.2 3.2,7.8" fill="#786334" />
+  <polygon points="22.8,6.8 21,5.2 20.8,7.8" fill="#786334" />
+  <polygon points="1.2,17.2 3.2,16.2 3,18.8" fill="#604f25" />
+  <polygon points="22.8,17.2 20.8,16.2 21,18.8" fill="#604f25" />
+
+  <!-- 2. D20 Base Body with Solar Aura Background -->
+  <polygon points="12,2 21.5,7 21.5,17 12,22 2.5,17 2.5,7" fill="url(#sunGlow)" stroke="url(#bronzeFrame)" stroke-width="1.2" stroke-linejoin="round" />
+
+  <!-- 3. Flapjack's Flowing Golden Mane (Silhouette Aura) -->
+  <path d="M7 6.5 Q12 4.2 17 6.5 Q15 10 18.5 13.5 Q17 18 12 18.8 Q7 18 5.5 13.5 Q9 10 7 6.5 Z" fill="#d97706" opacity="0.4" />
+  <path d="M8 7.5 Q12 5.5 16 7.5 Q14 11 17 14 Q15 17.5 12 18 Q9 17.5 7 14 Q10 11 8 7.5 Z" fill="#fbbf24" opacity="0.6" />
+
+  <!-- 4. Flapjack's Visage (Brows, Nose Bridge, Lips, and Blank White Eyes) -->
+  <!-- Chiseled Brow and Nose -->
+  <path d="M9.4 10.2 L11.3 10.2 L11.7 13.2 L12.3 13.2 L12.7 10.2 L14.6 10.2" fill="none" stroke="#78350f" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Glowing Blank Divine Eyes -->
+  <ellipse cx="10.3" cy="11.1" rx="0.9" ry="0.6" fill="#ffffff" />
+  <ellipse cx="13.7" cy="11.1" rx="0.9" ry="0.6" fill="#ffffff" />
+  <!-- Sculpted Mouth and Chin Shadow -->
+  <line x1="11.1" y1="14.6" x2="12.9" y2="14.6" stroke="#78350f" stroke-width="0.55" stroke-linecap="round" />
+  <path d="M11 15.8 Q12 16.4 13 15.8" fill="none" stroke="#92400e" stroke-width="0.5" stroke-linecap="round" />
+
+  <!-- 5. D20 Polyhedral Facet Overlay (Die Geometry) -->
+  <!-- Central Triangular Die Face Framing Flapjack -->
+  <polygon points="12,5.6 18.2,16.4 5.8,16.4" fill="none" stroke="#ffe066" stroke-width="0.85" stroke-linejoin="round" opacity="0.9" />
+
+  <!-- Radiating Outer Facet Ribs -->
+  <line x1="12" y1="2" x2="12" y2="5.6" stroke="#d4af37" stroke-width="0.75" />
+  <line x1="12" y1="5.6" x2="2.5" y2="7" stroke="#d4af37" stroke-width="0.75" />
+  <line x1="12" y1="5.6" x2="21.5" y2="7" stroke="#d4af37" stroke-width="0.75" />
+  <line x1="18.2" y1="16.4" x2="21.5" y2="7" stroke="#b8932b" stroke-width="0.75" />
+  <line x1="18.2" y1="16.4" x2="21.5" y2="17" stroke="#8a6c1e" stroke-width="0.75" />
+  <line x1="18.2" y1="16.4" x2="12" y2="22" stroke="#8a6c1e" stroke-width="0.75" />
+  <line x1="5.8" y1="16.4" x2="12" y2="22" stroke="#8a6c1e" stroke-width="0.75" />
+  <line x1="5.8" y1="16.4" x2="2.5" y2="17" stroke="#8a6c1e" stroke-width="0.75" />
+  <line x1="5.8" y1="16.4" x2="2.5" y2="7" stroke="#b8932b" stroke-width="0.75" />
+
+  <!-- Vertex Highlights for Die Definition -->
+  <circle cx="12" cy="5.6" r="0.5" fill="#ffffff" />
+  <circle cx="18.2" cy="16.4" r="0.5" fill="#fde047" />
+  <circle cx="5.8" cy="16.4" r="0.5" fill="#fde047" />
 </svg>
