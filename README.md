@@ -1,1 +1,1 @@
-# Flapjack's Dice Macros
+# Flapjacks Dice Macros
