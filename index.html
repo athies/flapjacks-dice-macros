@@ -4,20 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flapjacks Dice Macros</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=1.0.2" />
 </head>
 <body>
   <div class="container">
     <header>
       <h2>Flapjacks Dice Macros</h2>
-      <span id="macro-count" class="badge">0 / 5</span>
+      <span id="macro-count" class="badge">0 / 10</span>
     </header>
 
     <!-- Macro Creation Form -->
-    <section id="macro-form-section">
+    <section id="macro-form-section" aria-label="Create Macro">
       <div class="field">
         <label for="macro-name">Macro Name</label>
-        <input type="text" id="macro-name" placeholder="e.g. Sword Attack" maxlength="25" />
+        <input type="text" id="macro-name" placeholder="e.g. Sword Attack" maxlength="25" autocomplete="off" />
       </div>
 
       <div class="row">
@@ -48,21 +48,21 @@
     <hr />
 
     <!-- Saved Macros -->
-    <section>
+    <section aria-label="Saved Macros">
       <h3>Saved Macros</h3>
-      <div id="macro-list" class="macro-list">
+      <div id="macro-list" class="macro-list" role="list">
         <!-- Rendered dynamically -->
       </div>
     </section>
 
     <!-- Roll Output Area -->
-    <section id="result-box" class="result-box empty">
+    <section id="result-box" class="result-box empty" aria-live="polite">
       <div id="result-formula" class="result-formula">Click a macro to roll</div>
       <div id="result-breakdown" class="result-breakdown"></div>
       <div id="result-total" class="result-total">--</div>
     </section>
   </div>
 
-  <script type="module" src="main.js"></script>
+  <script type="module" src="main.js?v=1.0.2"></script>
 </body>
 </html>
