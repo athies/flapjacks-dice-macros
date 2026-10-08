@@ -166,6 +166,14 @@ hr {
   background: #333340;
 }
 
+.macro-run-btn:active {
+  transform: scale(0.98) translateY(1px);
+  background: #24242e;
+  border-color: var(--highlight);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 222, 67, 0.2);
+  transition: transform 0.05s ease, background 0.05s ease;
+}
+
 .macro-run-btn:hover .macro-tag {
   color: var(--highlight);
 }
@@ -175,6 +183,21 @@ hr {
   color: var(--text-muted);
   font-weight: 600;
   transition: color 0.15s ease;
+}
+
+@keyframes macro-pressed-flash {
+  0% {
+    background-color: rgba(255, 222, 67, 0.25);
+    border-color: var(--highlight);
+  }
+  100% {
+    background-color: var(--bg-secondary);
+    border-color: var(--border);
+  }
+}
+
+.macro-run-btn.rolling {
+  animation: macro-pressed-flash 0.35s ease-out;
 }
 
 .delete-btn {
