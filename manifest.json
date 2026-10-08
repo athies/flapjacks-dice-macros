@@ -2,7 +2,7 @@
   "name": "Flapjacks Dice Macros",
   "version": "1.0.1",
   "manifest_version": 1,
-  "author": "athies",
+  "author": "Flapjacks",
   "description": "Create, save, and roll custom dice macros with detailed breakdown equations.",
   "action": {
     "title": "Flapjacks Dice Macros",
