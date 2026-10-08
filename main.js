@@ -124,8 +124,14 @@ function render() {
     const runBtn = document.createElement("button");
     runBtn.className = "macro-run-btn";
     runBtn.innerHTML = `<span>${macro.name}</span><span class="macro-tag">${tag}</span>`;
-    runBtn.onclick = () => rollMacro(macro);
-
+    runBtn.onclick = () => {
+      runBtn.classList.remove("rolling");
+      // Trigger reflow to restart animation if clicked repeatedly
+      void runBtn.offsetWidth;
+      runBtn.classList.add("rolling");
+      rollMacro(macro);
+    };
+    
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
     deleteBtn.innerHTML = "&times;";
