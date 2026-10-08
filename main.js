@@ -2,6 +2,7 @@ import OBR from "https://esm.sh/@owlbear-rodeo/sdk";
 
 const STORAGE_KEY = "obr_dice_macros";
 const MAX_MACROS = 5;
+const BROADCAST_CHANNEL = "com.twobarkdesign.flapjack-macros.roll";
 
 // Elements
 const macroNameInput = document.getElementById("macro-name");
@@ -20,9 +21,24 @@ const resultTotal = document.getElementById("result-total");
 let macros = [];
 
 // Initialize Owlbear Rodeo SDK
-OBR.onReady(() => {
+OBR.onReady(async () => {
   loadMacros();
   render();
+
+  // Listen for rolls broadcast by ANY player in the room
+  OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
+    const { rollerName, formulaText, breakdownText, total } = event.data;
+
+    // Show a notification banner to other players
+    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`);
+
+    // Update the popover result display if it is currently open
+    resultBox.classList.remove("empty");
+    resultFormula.textContent = `${rollerName}: ${formulaText}`;
+    resultBreakdown.textContent = breakdownText;
+    resultTotal.textContent = total;
+  });
+  
 });
 
 // Load macros from localStorage
@@ -43,7 +59,7 @@ function saveMacros() {
 }
 
 // Roll logic
-function rollMacro(macro) {
+async function rollMacro(macro) {
   const rolls = [];
   for (let i = 0; i < macro.count; i++) {
     rolls.push(Math.floor(Math.random() * macro.die) + 1);
@@ -51,7 +67,7 @@ function rollMacro(macro) {
 
   const diceSum = rolls.reduce((sum, val) => sum + val, 0);
   const total = diceSum + macro.modifier;
-
+  
   // Build formula text (e.g. "Sword Attack (1d20+5)")
   const modSign = macro.modifier >= 0 ? `+${macro.modifier}` : `${macro.modifier}`;
   const modFormula = macro.modifier !== 0 ? modSign : "";
@@ -68,14 +84,23 @@ function rollMacro(macro) {
   }
   breakdownText += ` = ${total}`;
 
-  // Update Popover UI
+  // Get current player's Owlbear display name
+  const playerName = await OBR.player.getName();
+
+  // Update local UI & notification
   resultBox.classList.remove("empty");
   resultFormula.textContent = formulaText;
   resultBreakdown.textContent = breakdownText;
   resultTotal.textContent = total;
-
-  // Broadcast roll to OBR notification banner
   OBR.notification.show(`${formulaText}: ${breakdownText}`);
+
+  // Broadcast roll to all other connected players in the room
+  OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
+    rollerName: playerName || "A player",
+    formulaText,
+    breakdownText,
+    total
+  });
 }
 
 // Render dynamic elements
