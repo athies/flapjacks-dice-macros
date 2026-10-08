@@ -29,8 +29,8 @@ OBR.onReady(async () => {
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
     const { rollerName, formulaText, breakdownText, total } = event.data;
 
-    // Show a notification banner to other players
-    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`);
+    // Show a golden WARNING notification banner to other players
+    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, "WARNING");
 
     // Update the popover result display if it is currently open
     resultBox.classList.remove("empty");
@@ -38,7 +38,6 @@ OBR.onReady(async () => {
     resultBreakdown.textContent = breakdownText;
     resultTotal.textContent = total;
   });
-  
 });
 
 // Load macros from localStorage
@@ -68,6 +67,10 @@ async function rollMacro(macro) {
   const diceSum = rolls.reduce((sum, val) => sum + val, 0);
   const total = diceSum + macro.modifier;
   
+  // Check if roll achieved the maximum possible dice score
+  const maxPossibleDiceSum = macro.count * macro.die;
+  const isMaxRoll = diceSum === maxPossibleDiceSum;
+
   // Build formula text (e.g. "Sword Attack (1d20+5)")
   const modSign = macro.modifier >= 0 ? `+${macro.modifier}` : `${macro.modifier}`;
   const modFormula = macro.modifier !== 0 ? modSign : "";
@@ -84,17 +87,22 @@ async function rollMacro(macro) {
   }
   breakdownText += ` = ${total}`;
 
+  // Append pancake emoji if maximum possible roll
+  if (isMaxRoll) {
+    breakdownText += " 🥞";
+  }
+
   // Get current player's Owlbear display name
   const playerName = await OBR.player.getName();
 
-  // Update local UI & notification
+  // 1. Update local UI & notification banner with WARNING variant
   resultBox.classList.remove("empty");
   resultFormula.textContent = formulaText;
   resultBreakdown.textContent = breakdownText;
   resultTotal.textContent = total;
-  OBR.notification.show(`${formulaText}: ${breakdownText}`);
+  OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
 
-  // Broadcast roll to all other connected players in the room
+  // 2. Broadcast roll to all other connected players in the room
   OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
     rollerName: playerName || "A player",
     formulaText,
@@ -137,6 +145,9 @@ function render() {
     deleteBtn.innerHTML = "&times;";
     deleteBtn.title = "Delete macro";
     deleteBtn.onclick = () => {
+      const confirmed = window.confirm(`Delete the "${macro.name}" macro?`);
+      if (!confirmed) return;
+
       macros.splice(index, 1);
       saveMacros();
       render();
