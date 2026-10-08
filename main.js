@@ -1,8 +1,8 @@
 import OBR from "https://esm.sh/@owlbear-rodeo/sdk";
 
-const STORAGE_KEY = "obr_dice_macros";
-const MAX_MACROS = 10;
 const BROADCAST_CHANNEL = "com.twobarkdesign.flapjack-macros.roll";
+const MAX_MACROS = 10;
+const STORAGE_KEY = "obr_dice_macros";
 
 // Elements
 const macroNameInput = document.getElementById("macro-name");
@@ -27,17 +27,18 @@ OBR.onReady(async () => {
 
   // Listen for rolls broadcast by ANY player in the room
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
-    const { rollerName, formulaText, breakdownText, total } = event.data;
-
+    const { rollerName, formulaText, breakdownText, total, variant = "WARNING" } = event.data;
+  
     // Show a golden WARNING notification banner to other players
-    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, "WARNING");
-
+    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
+  
     // Update the popover result display if it is currently open
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
     resultTotal.textContent = total;
   });
+  
 });
 
 // Load macros from localStorage
@@ -107,8 +108,10 @@ async function rollMacro(macro) {
     rollerName: playerName || "A player",
     formulaText,
     breakdownText,
-    total
+    total,
+    variant: "WARNING"
   });
+
 }
 
 // Render dynamic elements
