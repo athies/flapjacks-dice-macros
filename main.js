@@ -1,8 +1,8 @@
 import OBR from "https://esm.sh/@owlbear-rodeo/sdk";
 
-const BROADCAST_CHANNEL = "com.twobarkdesign.flapjack-macros.roll";
-const MAX_MACROS = 10;
 const STORAGE_KEY = "obr_dice_macros";
+const MAX_MACROS = 10;
+const BROADCAST_CHANNEL = "com.twobarkdesign.flapjack-macros.roll";
 
 // Elements
 const macroNameInput = document.getElementById("macro-name");
@@ -28,17 +28,16 @@ OBR.onReady(async () => {
   // Listen for rolls broadcast by ANY player in the room
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
     const { rollerName, formulaText, breakdownText, total, variant = "WARNING" } = event.data;
-  
-    // Show a golden WARNING notification banner to other players
+
+    // Show golden WARNING notification banner to other players
     OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
-  
-    // Update the popover result display if it is currently open
+
+    // Update popover result display if open
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
     resultTotal.textContent = total;
   });
-  
 });
 
 // Load macros from localStorage
@@ -47,6 +46,7 @@ function loadMacros() {
   if (data) {
     try {
       macros = JSON.parse(data);
+      if (!Array.isArray(macros)) macros = [];
     } catch {
       macros = [];
     }
@@ -58,17 +58,24 @@ function saveMacros() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(macros));
 }
 
+// Cryptographically secure die roller
+function rollDie(sides) {
+  const arr = new Uint32Array(1);
+  crypto.getRandomValues(arr);
+  return (arr[0] % sides) + 1;
+}
+
 // Roll logic
 async function rollMacro(macro) {
   const rolls = [];
   for (let i = 0; i < macro.count; i++) {
-    rolls.push(Math.floor(Math.random() * macro.die) + 1);
+    rolls.push(rollDie(macro.die));
   }
 
   const diceSum = rolls.reduce((sum, val) => sum + val, 0);
   const total = diceSum + macro.modifier;
   
-  // Check if roll achieved the maximum possible dice score
+  // Check if roll achieved maximum possible dice score
   const maxPossibleDiceSum = macro.count * macro.die;
   const isMaxRoll = diceSum === maxPossibleDiceSum;
 
@@ -78,9 +85,7 @@ async function rollMacro(macro) {
   const formulaText = `${macro.name} (${macro.count}d${macro.die}${modFormula})`;
 
   // Build breakdown string (e.g. "3 + 2 + 1 = 6" or "14 - 2 = 12")
-  let breakdownParts = [...rolls];
-  let breakdownText = breakdownParts.join(" + ");
-
+  let breakdownText = rolls.join(" + ");
   if (macro.modifier > 0) {
     breakdownText += ` + ${macro.modifier}`;
   } else if (macro.modifier < 0) {
@@ -88,15 +93,15 @@ async function rollMacro(macro) {
   }
   breakdownText += ` = ${total}`;
 
-  // Append pancake emoji if maximum possible roll
   if (isMaxRoll) {
     breakdownText += " 🥞";
   }
 
   // Get current player's Owlbear display name
-  const playerName = await OBR.player.getName();
+  const rawPlayerName = await OBR.player.getName();
+  const playerName = (rawPlayerName || "A player").trim();
 
-  // 1. Update local UI & notification banner with WARNING variant
+  // 1. Update local UI & notification banner
   resultBox.classList.remove("empty");
   resultFormula.textContent = formulaText;
   resultBreakdown.textContent = breakdownText;
@@ -105,13 +110,12 @@ async function rollMacro(macro) {
 
   // 2. Broadcast roll to all other connected players in the room
   OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
-    rollerName: playerName || "A player",
+    rollerName: playerName,
     formulaText,
     breakdownText,
     total,
     variant: "WARNING"
   });
-
 }
 
 // Render dynamic elements
@@ -121,32 +125,51 @@ function render() {
 
   macroList.innerHTML = "";
   if (macros.length === 0) {
-    macroList.innerHTML = `<p style="font-size: 0.8rem; color: #9ca3af;">No macros created yet.</p>`;
+    const emptyMsg = document.createElement("p");
+    emptyMsg.style.fontSize = "0.8rem";
+    emptyMsg.style.color = "#9ca3af";
+    emptyMsg.textContent = "No macros created yet.";
+    macroList.appendChild(emptyMsg);
     return;
   }
+
+  // Use DocumentFragment for batched DOM insertion
+  const fragment = document.createDocumentFragment();
 
   macros.forEach((macro, index) => {
     const item = document.createElement("div");
     item.className = "macro-item";
+    item.setAttribute("role", "listitem");
 
     const modSign = macro.modifier > 0 ? `+${macro.modifier}` : (macro.modifier < 0 ? `${macro.modifier}` : "");
     const tag = `${macro.count}d${macro.die}${modSign}`;
 
     const runBtn = document.createElement("button");
     runBtn.className = "macro-run-btn";
-    runBtn.innerHTML = `<span>${macro.name}</span><span class="macro-tag">${tag}</span>`;
+    runBtn.type = "button";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = macro.name;
+
+    const tagSpan = document.createElement("span");
+    tagSpan.className = "macro-tag";
+    tagSpan.textContent = tag;
+
+    runBtn.appendChild(nameSpan);
+    runBtn.appendChild(tagSpan);
+
     runBtn.onclick = () => {
       runBtn.classList.remove("rolling");
-      // Trigger reflow to restart animation if clicked repeatedly
-      void runBtn.offsetWidth;
+      void runBtn.offsetWidth; // Reflow to restart animation
       runBtn.classList.add("rolling");
       rollMacro(macro);
     };
     
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
-    deleteBtn.innerHTML = "&times;";
-    deleteBtn.title = "Delete macro";
+    deleteBtn.type = "button";
+    deleteBtn.textContent = "×";
+    deleteBtn.setAttribute("aria-label", `Delete ${macro.name} macro`);
     deleteBtn.onclick = () => {
       const confirmed = window.confirm(`Delete the "${macro.name}" macro?`);
       if (!confirmed) return;
@@ -158,8 +181,10 @@ function render() {
 
     item.appendChild(runBtn);
     item.appendChild(deleteBtn);
-    macroList.appendChild(item);
+    fragment.appendChild(item);
   });
+
+  macroList.appendChild(fragment);
 }
 
 // Form Submission
@@ -173,10 +198,12 @@ addMacroBtn.addEventListener("click", () => {
 
   if (!name) {
     alert("Please provide a name for the macro.");
+    macroNameInput.focus();
     return;
   }
-  if (isNaN(count) || count < 1) {
-    alert("Count must be at least 1.");
+  if (isNaN(count) || count < 1 || count > 50) {
+    alert("Count must be between 1 and 50.");
+    diceCountInput.focus();
     return;
   }
 
@@ -188,4 +215,5 @@ addMacroBtn.addEventListener("click", () => {
   macroNameInput.value = "";
   diceCountInput.value = "1";
   modifierInput.value = "0";
+  macroNameInput.focus();
 });
