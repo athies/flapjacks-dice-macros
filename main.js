@@ -1,7 +1,7 @@
 import OBR from "https://esm.sh/@owlbear-rodeo/sdk";
 
 const STORAGE_KEY = "obr_dice_macros";
-const MAX_MACROS = 5;
+const MAX_MACROS = 10;
 const BROADCAST_CHANNEL = "com.twobarkdesign.flapjack-macros.roll";
 
 // Elements
