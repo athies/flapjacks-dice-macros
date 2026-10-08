@@ -100,7 +100,7 @@ input:focus, select:focus {
 .die-col { flex: 1.2; }
 .mod-col { flex: 1.2; }
 
-/* Primary Button with Flapjack Highlight */
+/* Primary Button */
 .primary-btn {
   width: 100%;
   background: var(--highlight);
@@ -134,12 +134,15 @@ hr {
   border-top: 1px solid var(--border);
 }
 
+/* Expanded list height to comfortably show up to 7-8 macros, smooth scroll for 10 */
 .macro-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 140px;
+  max-height: 280px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 
 .macro-item {
