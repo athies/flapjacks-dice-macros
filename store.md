@@ -2,12 +2,12 @@
 name: Flapjacks Dice Macros
 tagline: Create, save, and roll custom dice macros with full roll breakdowns.
 description: Create quick, reusable dice macros directly inside Owlbear Rodeo. Save up to 10 custom macros across sessions and share exact math breakdowns with the whole room.
-learnMore: https://github.com/athies/flapjacks_dice_macros
+learnMore: https://github.com/athies/flapjacks-dice-macros
 author:
   name: Flapjacks
   link: https://github.com/athies
 images:
-  - https://raw.githubusercontent.com/athies/flapjacks_dice_macros/main/screenshot.png
+  - https://raw.githubusercontent.com/athies/flapjacks-dice-macros/main/screenshot.png
 tags:
   - Dice
   - Utility
@@ -17,7 +17,7 @@ tags:
 
 Speed up your tabletop encounters with **Flapjacks Dice Macros**! Configure your most frequent attacks, checks, and damage formulas into one-click buttons right from your toolbar action menu.
 
-![Flapjacks Dice Macros Overview](https://raw.githubusercontent.com/athies/flapjacks_dice_macros/main/screenshot.png)
+![Flapjacks Dice Macros Overview](https://raw.githubusercontent.com/athies/flapjacks-dice-macros/main/screenshot.png)
 
 ## Features
 
@@ -42,4 +42,4 @@ Speed up your tabletop encounters with **Flapjacks Dice Macros**! Configure your
 
 ## Support
 
-Found a bug or have a suggestion? Open an issue on [GitHub](https://github.com/athies/flapjacks_dice_macros).
+Found a bug or have a suggestion? Open an issue on [GitHub](https://github.com/athies/flapjacks-dice-macros).
