@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "manifest_version": 1,
   "author": "athies",
-  "description": "Create, save, and roll up to 5 custom dice macros with detailed breakdown equations.",
+  "description": "Create, save, and roll custom dice macros with detailed breakdown equations.",
   "action": {
     "title": "Flapjacks Dice Macros",
     "icon": "https://athies.github.io/flapjacks_dice_macros/icon.svg",
