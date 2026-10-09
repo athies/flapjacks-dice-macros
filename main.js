@@ -1,4 +1,4 @@
-import OBR from "https://esm.sh/@owlbear-rodeo/sdk";
+import OBR from "https://esm.sh/@owlbear-rodeo/sdk@2.0.0";
 
 const STORAGE_KEY = "obr_dice_macros";
 const MAX_MACROS = 10;
