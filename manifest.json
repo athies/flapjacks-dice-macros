@@ -1,13 +1,13 @@
 {
   "name": "Flapjacks Dice Macros",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "manifest_version": 1,
   "author": "Flapjacks",
   "description": "Create, save, and roll custom dice macros with detailed breakdown equations.",
   "action": {
     "title": "Flapjacks Dice Macros",
-    "icon": "https://athies.github.io/flapjacks-dice-macros/icon.svg",
-    "popover": "https://athies.github.io/flapjacks-dice-macros/index.html",
+    "icon": "./icon.svg",
+    "popover": "./index.html",
     "width": 360,
     "height": 680
   }
