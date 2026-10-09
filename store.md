@@ -21,7 +21,7 @@ Speed up your tabletop encounters with **Flapjacks Dice Macros**! Configure your
 
 ## Features
 
-- **Up to 10 Persistent Macros:** Build and store up to 10 custom roll buttons saved directly across sessions.
+- **Persistent Macros:** Build and store custom roll buttons saved directly across sessions.
 - **Multiple Die Types & Quantities:** Supports d4, d6, d8, d10, d12, d20, and d100 with any count (e.g. `1d20`, `2d4`, `4d6`).
 - **Flexible Modifiers:** Add positive or negative modifiers (e.g. `+5`, `-2`).
 - **Detailed Math Breakdowns:** Displays every individual die rolled, modifiers, and the final sum (e.g. `Sword Attack (1d20+5): 14 + 5 = 19`).
