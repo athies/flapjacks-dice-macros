@@ -8,6 +8,7 @@ author:
   link: https://github.com/athies
 images:
   - https://raw.githubusercontent.com/athies/flapjacks-dice-macros/main/screenshot.png
+  - https://raw.githubusercontent.com/athies/flapjacks-dice-macros/main/icon.svg
 tags:
   - Dice
   - Utility
