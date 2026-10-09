@@ -1,7 +1,7 @@
 ---
 name: Flapjacks Dice Macros
 tagline: Create, save, and roll custom dice macros with full roll breakdowns.
-description: Create quick, reusable dice macros directly inside Owlbear Rodeo. Save up to 10 custom macros across sessions and share exact math breakdowns with the whole room.
+description: Create quick, reusable dice macros directly inside Owlbear Rodeo. Save up custom macros across sessions and share exact math breakdowns with the whole room.
 learnMore: https://github.com/athies/flapjacks-dice-macros
 author:
   name: Flapjacks
