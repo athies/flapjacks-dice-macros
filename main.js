@@ -27,17 +27,25 @@ OBR.onReady(async () => {
 
   // Listen for rolls broadcast by ANY player in the room
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
-    const { rollerName, formulaText, breakdownText, total, variant = "WARNING" } = event.data;
+    if (!event || !event.data) return;
+    const {
+      rollerName = "A player",
+      formulaText = "",
+      breakdownText = "",
+      total = "--",
+      variant = "WARNING"
+    } = event.data;
 
     // Show golden WARNING notification banner to other players
     OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
-
+  
     // Update popover result display if open
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
     resultTotal.textContent = total;
   });
+
 });
 
 // Load macros from localStorage
