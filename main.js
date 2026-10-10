@@ -225,3 +225,43 @@ addMacroBtn.addEventListener("click", () => {
   modifierInput.value = "0";
   macroNameInput.focus();
 });
+
+let popoverTimeout = null;
+
+async function showCornerResult(rollerName, formulaText, breakdownText, total) {
+  const width = 200;
+  const height = 180;
+  const margin = 20;
+
+  // Position relative to viewport bounds
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  const url = new URL("corner.html", window.location.href);
+  url.searchParams.set("name", rollerName);
+  url.searchParams.set("formula", formulaText);
+  url.searchParams.set("breakdown", breakdownText);
+  url.searchParams.set("total", total);
+
+  const POPOVER_ID = "com.twobarkdesign.flapjack-macros.corner-result";
+
+  await OBR.popover.open({
+    id: POPOVER_ID,
+    url: url.toString(),
+    width,
+    height,
+    anchorPosition: {
+      left: viewportWidth - width - margin,
+      top: viewportHeight - height - margin
+    },
+    anchorReference: "POSITION",
+    disableClickAway: true,
+    hidePaper: true // Hides Owlbear's default white container wrapper
+  });
+
+  // Automatically dismiss after 6 seconds
+  clearTimeout(popoverTimeout);
+  popoverTimeout = setTimeout(() => {
+    OBR.popover.close(POPOVER_ID);
+  }, 6000);
+}
