@@ -25,10 +25,12 @@ OBR.onReady(async () => {
   loadMacros();
   render();
 
-  // Listen for rolls broadcast by other players in the room
+  // Listen for broadcast messages from other connected players
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
     if (!event || !event.data) return;
+
     const {
+      rollerId,
       rollerName = "A player",
       formulaText = "",
       breakdownText = "",
@@ -36,10 +38,13 @@ OBR.onReady(async () => {
       variant = "WARNING"
     } = event.data;
 
-    // Show golden WARNING notification banner to other players
+    // Ignore self-broadcasts if received locally
+    if (rollerId && rollerId === OBR.player.id) return;
+
+    // Display notification banner on the receiving player's screen
     OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
 
-    // Update popover result display if open
+    // Update the receiving player's popover UI
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
@@ -91,7 +96,7 @@ async function rollMacro(macro) {
   const modFormula = macro.modifier !== 0 ? modSign : "";
   const formulaText = `${macro.name} (${macro.count}d${macro.die}${modFormula})`;
 
-  // Build breakdown string (e.g. "3 + 2 + 1 = 6" or "14 - 2 = 12")
+  // Build breakdown string
   let breakdownText = rolls.join(" + ");
   if (macro.modifier > 0) {
     breakdownText += ` + ${macro.modifier}`;
@@ -105,8 +110,15 @@ async function rollMacro(macro) {
   }
 
   // Get current player's Owlbear display name
-  const rawPlayerName = await OBR.player.getName();
-  const playerName = (rawPlayerName || "A player").trim();
+  let playerName = "A player";
+  try {
+    const rawPlayerName = await OBR.player.getName();
+    if (rawPlayerName && rawPlayerName.trim()) {
+      playerName = rawPlayerName.trim();
+    }
+  } catch (err) {
+    console.warn("Could not retrieve player name:", err);
+  }
 
   // 1. Update local UI & local notification banner
   resultBox.classList.remove("empty");
@@ -115,18 +127,15 @@ async function rollMacro(macro) {
   resultTotal.textContent = total;
   OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
 
-  // 2. Broadcast roll ONLY to REMOTE users in the room
-  OBR.broadcast.sendMessage(
-    BROADCAST_CHANNEL,
-    {
-      rollerName: playerName,
-      formulaText,
-      breakdownText,
-      total,
-      variant: "WARNING"
-    },
-    { destination: "REMOTE" }
-  );
+  // 2. Broadcast roll to all players listening on the channel
+  await OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
+    rollerId: OBR.player.id,
+    rollerName: playerName,
+    formulaText,
+    breakdownText,
+    total,
+    variant: "WARNING"
+  });
 }
 
 // Render dynamic elements
