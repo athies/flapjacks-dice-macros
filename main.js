@@ -25,15 +25,26 @@ OBR.onReady(async () => {
   loadMacros();
   render();
 
-  // Listen for rolls broadcast by ANY player in the room
+  // Listen for rolls broadcast by other players in the room
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
     if (!event || !event.data) return;
-    const { rollerName, formulaText, breakdownText, total } = event.data;
+    const {
+      rollerName = "A player",
+      formulaText = "",
+      breakdownText = "",
+      total = "--",
+      variant = "WARNING"
+    } = event.data;
 
-    // Display the corner popover on their screen
-    showCornerResult(rollerName, formulaText, breakdownText, total);
+    // Show golden WARNING notification banner to other players
+    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
+
+    // Update popover result display if open
+    resultBox.classList.remove("empty");
+    resultFormula.textContent = `${rollerName}: ${formulaText}`;
+    resultBreakdown.textContent = breakdownText;
+    resultTotal.textContent = total;
   });
-
 });
 
 // Load macros from localStorage
@@ -97,23 +108,25 @@ async function rollMacro(macro) {
   const rawPlayerName = await OBR.player.getName();
   const playerName = (rawPlayerName || "A player").trim();
 
-  // 1. Update local UI & notification banner
+  // 1. Update local UI & local notification banner
   resultBox.classList.remove("empty");
   resultFormula.textContent = formulaText;
   resultBreakdown.textContent = breakdownText;
   resultTotal.textContent = total;
-  //OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
-  showCornerResult(playerName || "You", formulaText, breakdownText, total);
+  OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
 
-  // 2. Broadcast roll to all other connected players in the room
-  OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
-    rollerName: playerName,
-    formulaText,
-    breakdownText,
-    total,
-    variant: "WARNING"
-  });
-  
+  // 2. Broadcast roll ONLY to REMOTE users in the room
+  OBR.broadcast.sendMessage(
+    BROADCAST_CHANNEL,
+    {
+      rollerName: playerName,
+      formulaText,
+      breakdownText,
+      total,
+      variant: "WARNING"
+    },
+    { destination: "REMOTE" }
+  );
 }
 
 // Render dynamic elements
@@ -131,7 +144,6 @@ function render() {
     return;
   }
 
-  // Use DocumentFragment for batched DOM insertion
   const fragment = document.createDocumentFragment();
 
   macros.forEach((macro, index) => {
@@ -158,7 +170,7 @@ function render() {
 
     runBtn.onclick = () => {
       runBtn.classList.remove("rolling");
-      void runBtn.offsetWidth; // Reflow to restart animation
+      void runBtn.offsetWidth;
       runBtn.classList.add("rolling");
       rollMacro(macro);
     };
@@ -209,49 +221,8 @@ addMacroBtn.addEventListener("click", () => {
   saveMacros();
   render();
 
-  // Reset inputs
   macroNameInput.value = "";
   diceCountInput.value = "1";
   modifierInput.value = "0";
   macroNameInput.focus();
 });
-
-let popoverTimeout = null;
-
-async function showCornerResult(rollerName, formulaText, breakdownText, total) {
-  const width = 200;
-  const height = 180;
-  const margin = 20;
-
-  // Position relative to viewport bounds
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-
-  const url = new URL("corner.html", window.location.href);
-  url.searchParams.set("name", rollerName);
-  url.searchParams.set("formula", formulaText);
-  url.searchParams.set("breakdown", breakdownText);
-  url.searchParams.set("total", total);
-
-  const POPOVER_ID = "com.twobarkdesign.flapjack-macros.corner-result";
-
-  await OBR.popover.open({
-    id: POPOVER_ID,
-    url: url.toString(),
-    width,
-    height,
-    anchorPosition: {
-      left: viewportWidth - width - margin,
-      top: viewportHeight - height - margin
-    },
-    anchorReference: "POSITION",
-    disableClickAway: true,
-    hidePaper: true // Hides Owlbear's default white container wrapper
-  });
-
-  // Automatically dismiss after 6 seconds
-  clearTimeout(popoverTimeout);
-  popoverTimeout = setTimeout(() => {
-    OBR.popover.close(POPOVER_ID);
-  }, 6000);
-}
