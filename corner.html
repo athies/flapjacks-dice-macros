@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flapjacks Roll Result</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+    }
+    .corner-card {
+      width: 100%;
+      height: 100%;
+      background: #1e1e24;
+      border: 1px solid rgba(255, 222, 67, 0.4);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12px;
+      color: #f3f4f6;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+    }
+    .roller-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+    }
+    .roll-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 2px;
+      margin: auto 0;
+    }
+    .formula {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+    .breakdown {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .total-badge {
+      background: #151519;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #FFDE43;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <div class="corner-card">
+    <div id="roller" class="roller-name">Player</div>
+    <div class="roll-body">
+      <div id="formula" class="formula"></div>
+      <div id="breakdown" class="breakdown"></div>
+    </div>
+    <div id="total" class="total-badge">--</div>
+  </div>
+
+  <script type="module">
+    import OBR from "https://esm.sh/@owlbear-rodeo/sdk@2.0.0";
+
+    OBR.onReady(() => {
+      // Parse parameters passed in URL
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("roller").textContent = params.get("name") || "Player";
+      document.getElementById("formula").textContent = params.get("formula") || "";
+      document.getElementById("breakdown").textContent = params.get("breakdown") || "";
+      document.getElementById("total").textContent = params.get("total") || "--";
+    });
+  </script>
+</body>
+</html>
