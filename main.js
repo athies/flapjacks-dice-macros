@@ -28,22 +28,10 @@ OBR.onReady(async () => {
   // Listen for rolls broadcast by ANY player in the room
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
     if (!event || !event.data) return;
-    const {
-      rollerName = "A player",
-      formulaText = "",
-      breakdownText = "",
-      total = "--",
-      variant = "WARNING"
-    } = event.data;
+    const { rollerName, formulaText, breakdownText, total } = event.data;
 
-    // Show golden WARNING notification banner to other players
-    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
-  
-    // Update popover result display if open
-    resultBox.classList.remove("empty");
-    resultFormula.textContent = `${rollerName}: ${formulaText}`;
-    resultBreakdown.textContent = breakdownText;
-    resultTotal.textContent = total;
+    // Display the corner popover on their screen
+    showCornerResult(rollerName, formulaText, breakdownText, total);
   });
 
 });
@@ -114,7 +102,8 @@ async function rollMacro(macro) {
   resultFormula.textContent = formulaText;
   resultBreakdown.textContent = breakdownText;
   resultTotal.textContent = total;
-  OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
+  //OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
+  showCornerResult(playerName || "You", formulaText, breakdownText, total);
 
   // 2. Broadcast roll to all other connected players in the room
   OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
@@ -124,6 +113,7 @@ async function rollMacro(macro) {
     total,
     variant: "WARNING"
   });
+  
 }
 
 // Render dynamic elements
