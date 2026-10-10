@@ -25,7 +25,7 @@ OBR.onReady(async () => {
   loadMacros();
   render();
 
-  // Update popover UI if this user currently has the window open
+  // Listen for rolls broadcast by ANY player in the room
   OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
     if (!event || !event.data) return;
     const {
@@ -36,6 +36,10 @@ OBR.onReady(async () => {
       variant = "WARNING"
     } = event.data;
 
+    // Show golden WARNING notification banner to other players
+    OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
+  
+    // Update popover result display if open
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
