@@ -2,7 +2,7 @@ import OBR from "https://esm.sh/@owlbear-rodeo/sdk@2.0.0";
 
 const STORAGE_KEY = "obr_dice_macros";
 const MAX_MACROS = 10;
-const BROADCAST_CHANNEL = "com.twobarkdesign.flapjack-macros.roll";
+const ROOM_METADATA_KEY = "com.twobarkdesign.flapjack-macros/last-roll";
 
 // Elements
 const macroNameInput = document.getElementById("macro-name");
@@ -25,31 +25,34 @@ OBR.onReady(async () => {
   loadMacros();
   render();
 
-  // Listen for broadcast messages from other connected players
-  OBR.broadcast.onMessage(BROADCAST_CHANNEL, (event) => {
-    if (!event || !event.data) return;
+  // Listen for room metadata updates from any player in the room
+  OBR.room.onMetadataChange(async (metadata) => {
+    const rollData = metadata[ROOM_METADATA_KEY];
+    if (!rollData) return;
 
     const {
+      id,
       rollerId,
       rollerName = "A player",
       formulaText = "",
       breakdownText = "",
       total = "--",
       variant = "WARNING"
-    } = event.data;
+    } = rollData;
 
-    // Ignore self-broadcasts if received locally
+    // Ignore self updates if desired (or allow them to keep UI in sync)
     if (rollerId && rollerId === OBR.player.id) return;
 
-    // Display notification banner on the receiving player's screen
+    // Display notification banner on the other players' screens
     OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
 
-    // Update the receiving player's popover UI
+    // Update popover UI if it happens to be open
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
     resultTotal.textContent = total;
   });
+
 });
 
 // Load macros from localStorage
@@ -127,15 +130,19 @@ async function rollMacro(macro) {
   resultTotal.textContent = total;
   OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
 
-  // 2. Broadcast roll to all players listening on the channel
-  await OBR.broadcast.sendMessage(BROADCAST_CHANNEL, {
-    rollerId: OBR.player.id,
-    rollerName: playerName,
-    formulaText,
-    breakdownText,
-    total,
-    variant: "WARNING"
+  // 2. Sync roll via Room Metadata to all users in the room
+  await OBR.room.setMetadata({
+    [ROOM_METADATA_KEY]: {
+      id: `${Date.now()}-${Math.random()}`,
+      rollerId: OBR.player.id,
+      rollerName: playerName,
+      formulaText,
+      breakdownText,
+      total,
+      variant: "WARNING"
+    }
   });
+  
 }
 
 // Render dynamic elements
