@@ -25,13 +25,12 @@ OBR.onReady(async () => {
   loadMacros();
   render();
 
-  // Listen for room metadata updates from any player in the room
-  OBR.room.onMetadataChange(async (metadata) => {
+  // Listen for room metadata updates
+  OBR.room.onMetadataChange((metadata) => {
     const rollData = metadata[ROOM_METADATA_KEY];
     if (!rollData) return;
-
+  
     const {
-      id,
       rollerId,
       rollerName = "A player",
       formulaText = "",
@@ -39,14 +38,14 @@ OBR.onReady(async () => {
       total = "--",
       variant = "WARNING"
     } = rollData;
-
-    // Ignore self updates if desired (or allow them to keep UI in sync)
+  
+    // Ignore self updates if desired
     if (rollerId && rollerId === OBR.player.id) return;
-
-    // Display notification banner on the other players' screens
+  
+    // Display notification banner
     OBR.notification.show(`${rollerName} rolled ${formulaText}: ${breakdownText}`, variant);
-
-    // Update popover UI if it happens to be open
+  
+    // Update the popover UI if open
     resultBox.classList.remove("empty");
     resultFormula.textContent = `${rollerName}: ${formulaText}`;
     resultBreakdown.textContent = breakdownText;
@@ -123,14 +122,14 @@ async function rollMacro(macro) {
     console.warn("Could not retrieve player name:", err);
   }
 
-  // 1. Update local UI & local notification banner
+  // Update local UI & local notification banner
   resultBox.classList.remove("empty");
   resultFormula.textContent = formulaText;
   resultBreakdown.textContent = breakdownText;
   resultTotal.textContent = total;
   OBR.notification.show(`${formulaText}: ${breakdownText}`, "WARNING");
 
-  // 2. Sync roll via Room Metadata to all users in the room
+  // Broadcast roll to all players via room metadata
   await OBR.room.setMetadata({
     [ROOM_METADATA_KEY]: {
       id: `${Date.now()}-${Math.random()}`,
@@ -142,7 +141,7 @@ async function rollMacro(macro) {
       variant: "WARNING"
     }
   });
-  
+
 }
 
 // Render dynamic elements
